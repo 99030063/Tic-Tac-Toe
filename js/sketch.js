@@ -4,21 +4,18 @@ let board = [
   ['','',''],
 ];
 
-let players = ['X','O']
+let w; // = width / 3;
+let h; //= height / 3;
 
-
-let currentPlayer;
-let available = [];
+let ai = 'X'
+let human = 'O'
+let currentPlayer = human;
 
 
 function setup(){
   createCanvas (400, 400);
-  currentPlayer = floor(random(available.length))
-  for(let j = 0; j < 3; j++){
-    for (let i = 0; i < 3; i++){
-      available.push([i,j]);
-    }
-  }
+  w = width / 3;
+  h = height / 3;
 };
 
 function equals3(a,b,c){
@@ -50,32 +47,43 @@ function checkWinner(){
     winner = board[2][0]
   }
 
+  let openSpots = 0;
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      if (board[i][j] == '') {
+        openSpots++;
+      }
+    }
+  }
 
-  if(winner == null && available.length == 0){
+  if(winner == null && openSpots == 0){
     return 'tie'
   } else {
     return winner;
   }
 };
 
-function nextTurn(){
-  let index = floor(random(available.length));
-  let spot = available.splice(index,1)[0];
-  let i = spot[0]
-  let j = spot[1]
-console.log(i,j)
 
-  board[i][j] = players[currentPlayer];
-  currentPlayer = (currentPlayer + 1) % players.length;
+function mousePressed() {
+  if (currentPlayer == human) {
+    // Human make turn
+    let i = floor(mouseX / w);
+    let j = floor(mouseY / h);
+    // If valid turn
+    if (board[i][j] == '') {
+      board[i][j] = human;
+      currentPlayer = ai;
+      nextTurn();
+    }
+  }
 }
-
-
   
 
 function draw(){
-  background(100)
-  let w = width / 3;
-  let h = height / 3;
+  background(100);
+  strokeWeight (4)
+  frameRate (30)
+  
   
   line(w,0,w,height);
   line(w*2,0,w*2,height);
@@ -88,14 +96,14 @@ function draw(){
       let y = h * j + h / 2;
       let spot = board[i][j];
       textSize(32)
-      let xr = w / 4
-      if(spot == players[1]){
+      let r = w / 4
+      if(spot == human){
         noFill()
-        ellipse(x, y, w / 1.75);
-      } else if (spot == players[0]){
+        ellipse(x, y, r * 2);
+      } else if (spot == ai){
        
-        line(x - xr, y - xr, x + xr, y + xr);
-        line(x + xr, y - xr, x - xr, y + xr);
+        line(x - r, y - r, x + r, y + r);
+        line(x + r, y - r, x - r, y + r);
       }
     }
   }
@@ -109,8 +117,6 @@ function draw(){
     } else {
       resultP.html(`${result} wins!`);
     }
-  } else {
-    nextTurn();
   }
 
 };
