@@ -11,11 +11,11 @@ let ai = 'X'
 let human = 'O'
 let currentPlayer = human;
 
-
 function setup(){
   createCanvas (400, 400);
   w = width / 3;
   h = height / 3;
+  bestMove();
 };
 
 function equals3(a,b,c){
@@ -63,7 +63,6 @@ function checkWinner(){
   }
 };
 
-
 function mousePressed() {
   if (currentPlayer == human) {
     // Human make turn
@@ -73,7 +72,7 @@ function mousePressed() {
     if (board[i][j] == '') {
       board[i][j] = human;
       currentPlayer = ai;
-      nextTurn();
+      bestMove();
     }
   }
 }
